@@ -1,0 +1,12 @@
+node_modules/
+qa/
+.env
+.env.*
+!.env.example
+data/
+exports/
+reports/
+*.csv
+*.xlsx
+*.log
+.DS_Store
