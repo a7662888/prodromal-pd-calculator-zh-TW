@@ -5,7 +5,7 @@
 - [x] User approved public repository and Pages at a7662888/prodromal-pd-calculator-zh-TW.
 - [x] Choose browser-only data flow; document minimum inputs and retention.
 - [x] Implement Traditional Chinese calculator and traceable LR audit.
-- [ ] Pass numeric tests and runtime/privacy/security checks.
-- [ ] Inspect desktop and mobile screenshots.
-- [ ] Publish approved source and Pages; verify live calculator.
-- [ ] Record final QA, release decision and shared resource location.
+- [x] Pass 14 numeric tests and runtime/privacy/security checks.
+- [x] Inspect desktop and mobile screenshots.
+- [x] Publish approved source and Pages; verify live calculator and all six asset hashes.
+- [x] Record final QA, release decision and project SHARED_RESOURCES.md location.
