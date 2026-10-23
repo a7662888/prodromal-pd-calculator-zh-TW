@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="依 2019 MDS 研究準則獨立實作的繁體中文前驅期巴金森病機率計算器。純瀏覽器計算，不上傳健康輸入。僅供研究與教學。">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'">
+  <title>前驅期巴金森病研究計算器｜繁體中文</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#calculator">跳到計算工具</a>
+  <header class="site-header wrap">
+    <a class="wordmark" href="#top">前驅期巴金森病<span>研究計算工具</span></a>
+    <nav aria-label="主要導覽"><a href="#calculator">計算工具</a><a href="#methods">計算方法</a><a href="#sources">來源與限制</a></nav>
+  </header>
+  <main id="top" class="wrap">
+    <section class="intro" aria-labelledby="title">
+      <div><p class="edition">2019 MDS 研究準則 · 繁體中文獨立實作</p><h1 id="title">前驅期巴金森病<br>研究機率計算器</h1><p class="lead">從年齡先驗機率出發，結合已知的風險與前驅標記，<br class="desktop">以貝氏方法估計目前處於前驅期巴金森病的機率。</p></div>
+      <div class="intro-note"><strong>研究與教學用途</strong><p>由神經科或動作障礙專業人員判讀。這個數值不能診斷巴金森病，也不是未來幾年內的發病率。</p><p class="privacy-note">輸入只在此頁計算，不上傳、不儲存。<br>重新整理或按「清除」即可重新開始。</p></div>
+    </section>
+    <div class="workspace" id="calculator">
+      <div class="assessment">
+        <div class="form-toolbar"><h2>評估資料</h2><div><button id="example" type="button" class="text-button">載入虛構示範</button><button id="reset" type="button" class="text-button">清除全部</button></div></div>
+        <p class="instruction">已評估才填答；未檢查、不確定或邊界結果，保留「未評估」。陰性結果也會影響計算。</p>
+        <p id="example-note" class="example-note" hidden>目前為虛構示範資料，非真實病人。修改任一項後即改為您的當前輸入。</p>
+        <form id="assessment-form" autocomplete="off">
+          <section class="eligibility panel" aria-labelledby="eligibility-title">
+            <div class="section-heading"><span class="section-number">01</span><div><h3 id="eligibility-title">先確認適用範圍</h3><p>本版本使用 50 歲以上的年齡先驗機率。</p></div></div>
+            <div class="field"><div class="field-copy"><label for="age">年齡層</label><p id="age-help">只需要年齡層，請勿輸入生日或個人識別資料。</p></div><select id="age" name="age" aria-describedby="age-help"><option value="">請選擇</option><option value="under50">未滿 50 歲（不適用）</option></select></div>
+            <div class="field"><div class="field-copy"><label for="clinicalPD">是否已達臨床巴金森病診斷？</label><p id="pd-help">前驅準則適用於尚未達臨床診斷閾值者。</p></div><select id="clinicalPD" name="clinicalPD" aria-describedby="pd-help"><option value="unknown">尚未確認</option><option value="no">否，尚未達臨床診斷</option><option value="yes">是，已達臨床診斷</option></select></div>
+            <div class="field"><div class="field-copy"><label for="highPenetrance">是否有已知高外顯率單基因變異？</label><p id="gene-help">例如 SNCA、VPS35，或符合致病遺傳型態的 PRKN（parkin）、PINK1、DJ1；已知帶因者不套用本模型。「無已知」不表示必須先做基因檢測。</p></div><select id="highPenetrance" name="highPenetrance" aria-describedby="gene-help"><option value="unknown">尚未確認</option><option value="no">無已知適用變異</option><option value="yes">有已知適用變異</option></select></div>
+          </section>
+          <div id="marker-groups"></div>
+        </form>
+        <a class="mobile-result-link" href="#calculator">回到機率估計 ↑</a>
+      </div>
+      <aside class="result-column" aria-label="計算結果">
+        <section class="result-card">
+          <div class="result-heading"><h2>前驅期機率估計</h2><span>即時計算</span></div>
+          <div id="result-live" role="status" aria-live="polite" aria-atomic="true"><p class="probability"><span id="probability">—</span><span class="percent">%</span></p><p id="result-label" class="result-label">先完成適用範圍</p></div>
+          <div class="probability-track" aria-hidden="true"><div id="probability-fill"></div><span class="threshold-marker"></span></div><div class="scale-labels"><span>0%</span><span>80% 研究門檻</span><span>100%</span></div>
+          <p id="result-explanation">完成左側三個適用性欄位後，會以已填資料進行估計。</p>
+          <div id="result-metrics" class="metrics" hidden><div><span>年齡先驗機率</span><strong id="prior">—</strong></div><div><span>合併似然比</span><strong id="total-lr">—</strong></div><div><span>已評估項目</span><strong id="assessed">—</strong></div><div><span>前驅標記合併 LR</span><strong id="prodromal-lr">—</strong></div></div>
+          <ul id="result-notes" class="result-notes"></ul>
+          <p class="result-caution">未達研究門檻不等於排除疾病；缺漏資料與標記間相依性都可能影響估計。</p>
+        </section>
+        <details class="audit-panel" open><summary>查看本次計算明細</summary><div id="audit-content"><p>尚未計算。</p></div></details>
+      </aside>
+    </div>
+    <section id="methods" class="reference-section">
+      <div class="section-heading"><span class="section-number">方法</span><div><h2>每一步，都可以核對。</h2><p>使用 2019 年更新值；重疊標記的合併沿用 2015 年方法。</p></div></div>
+      <div class="method-grid"><div><h3>從機率換成勝算</h3><p>先驗勝算 = 年齡先驗機率 ÷（1 − 年齡先驗機率）</p><h3>加入評估證據</h3><p>後驗勝算 = 先驗勝算 × 各項適用的 LR<br>後驗機率 = 後驗勝算 ÷（1 + 後驗勝算）</p></div><div><h3>如何解讀 80%？</h3><p>以未四捨五入的後驗機率判定 ≥80%，並確認前驅標記的合併 LR ≥4，才符合本工具實作的 probable prodromal PD 研究分類條件。只靠風險因子不作此分類。</p><h3>未評估 ≠ 陰性</h3><p>未評估、邊界與原文不適用（NA）的項目以 LR = 1 處理。未填資料不補為正常。RBD、OH 與遺傳來源各選一種，避免重複計分。</p></div></div>
+      <details class="reference-table"><summary>展開年齡先驗值與遺傳 LR 表</summary><div class="table-scroll"><table><caption>Heinzel et al., 2019, Table 2</caption><thead><tr><th scope="col">年齡</th><th scope="col">先驗機率</th><th scope="col">GBA LR</th><th scope="col">LRRK2 LR</th></tr></thead><tbody id="age-table"></tbody></table></div></details>
+      <details class="reference-table"><summary>展開所有標記與 LR 對照</summary><p>下表為本工具使用的選項。未評估均為 LR = 1；GBA／LRRK2 按年齡表取值。</p><div class="table-scroll"><table><caption>2019 Table 1；詳細判定條件見各輸入欄位</caption><thead><tr><th scope="col">標記</th><th scope="col">評估結果</th><th scope="col">LR</th></tr></thead><tbody id="lr-table"></tbody></table></div></details>
+    </section>
+    <section id="sources" class="reference-section sources">
+      <div><h2>來源、版本與使用限制</h2><p>這是依公開論文獨立實作的非官方繁體中文工具，並非 MDS 官方翻譯或官方計算器，未獲 MDS 背書；未存取、複製或核對會員版程式。本版本固定採用 2019 準則，不宣稱與官方現行網站完全一致。</p><p>模型假設各標記大致獨立，原始 LR 的估計不確定性未反映在單一結果中；不同族群與評估方法的表現可能不同。本工具未經臨床效能驗證，不作診斷、治療或個人預後決策。</p><p>健康輸入只存在當前頁面記憶體；無登入、無資料庫、無分析追蹤、無第三方字型。GitHub 託管仍可能記錄 IP 等一般連線資訊；點選外部文獻連結會前往該網站。</p></div>
+      <ol class="citations"><li><a href="https://doi.org/10.1002/mds.27802" target="_blank" rel="noopener noreferrer">Heinzel S, et al. Update of the MDS research criteria for prodromal Parkinson's disease.</a><p>Movement Disorders. 2019;34:1464–1470.<br>DOI: 10.1002/mds.27802 · Table 1–2<br>論文採 Creative Commons Attribution 授權；本工具重新編寫介面、翻譯與程式，並保留出處。</p></li><li><a href="https://doi.org/10.1002/mds.26431" target="_blank" rel="noopener noreferrer">Berg D, et al. MDS research criteria for prodromal Parkinson's disease.</a><p>Movement Disorders. 2015;30:1600–1611.<br>DOI: 10.1002/mds.26431<br>用於貝氏方法、適用範圍與動作評估合併規則；LR 數值採 2019 更新。</p></li><li><a href="https://www.movementdisorders.org/MDS/Members-Only/Prodromal-PD-Calculator.htm" target="_blank" rel="noopener noreferrer">MDS 官方計算器（需會員登入）</a><p>官方資源與最新版本請依 MDS 公告確認。</p></li></ol>
+    </section>
+  </main>
+  <footer class="wrap"><span id="version"></span><a href="https://github.com/a7662888/prodromal-pd-calculator-zh-TW" target="_blank" rel="noopener noreferrer">原始碼與核對紀錄 ↗</a><span>來源核對：2026-10-23</span></footer>
+  <noscript><div class="noscript">此工具需啟用 JavaScript 才能計算；不會上傳輸入資料。</div></noscript>
+</body>
+</html>
