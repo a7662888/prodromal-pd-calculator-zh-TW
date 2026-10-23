@@ -30,6 +30,7 @@ Verified 2026-10-23. This is an independent implementation of published research
 - All included prodromal LRs, including assessed negatives, contribute to the prodromal combined LR. Substantia nigra ultrasound is a risk marker.
 - Male-only markers are disabled and cleared when sex is female or unspecified; the calculation layer also excludes them defensively.
 - Isolated anxiety without depression is neutral (LR 1), not a depression-positive marker or an absence-of-depression LR−; this follows the 2015 p1605 restriction on LR− when anxiety symptoms exist.
+- Erectile LR− is only applied to normal function; other severity/borderline findings are neutral. Urinary LR− requires direct inquiry, and long-standing (>10 years) stress incontinence in women is excluded (2015 p1605).
 - NA is a neutral LR of 1, not LR 0. Negative assessed outcomes with supported LR− are included.
 - No self-reported symptom is silently treated as a validated objective test. The professional user must apply source definitions and exclude alternative explanations.
 - Research classification uses full-precision posterior odds ≥4 and prodromal combined LR ≥4. Display values are rounded separately.

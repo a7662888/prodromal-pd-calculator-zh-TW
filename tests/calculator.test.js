@@ -52,6 +52,7 @@ test('male-only markers never contribute in female or unspecified groups',() => 
   close(calculate({...base,sex:'female',urate:'low',erectile:'yes'}).totalLR,.8);
   close(calculate({...base,urate:'low',erectile:'yes'}).totalLR,1);
   close(calculate({...base,sex:'male',urate:'low',erectile:'yes'}).totalLR,1.2*1.8*3.4);
+  close(calculate({...base,sex:'male',erectile:'borderline'}).totalLR,1.2);
 });
 test('isolated anxiety is neither depression-positive nor negative',() => {
   close(calculate({...base,depression:'anxietyOnly'}).totalLR,1);
